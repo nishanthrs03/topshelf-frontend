@@ -1,0 +1,193 @@
+/* Navbar.css */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+
+.navbar-header {
+    background: rgba(7, 7, 13, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    height: 64px;
+    display: flex;
+    justify-content: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+/* Thin accent line at very bottom of navbar */
+.navbar-header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 48px;
+    width: 40px;
+    height: 1px;
+    background: #a855f7;
+}
+
+.navbar-content {
+    width: 100%;
+    max-width: 1280px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 48px;
+}
+
+.nav-brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 400;
+    font-style: italic;
+    color: #f0ede8;
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    transition: color 0.2s;
+}
+
+.nav-brand:hover { color: #a855f7; }
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+}
+
+.nav-item {
+    text-decoration: none;
+    color: rgba(240, 237, 232, 0.4);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    transition: color 0.2s;
+}
+
+.nav-item:hover { color: #f0ede8; }
+
+.nav-btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 8px 20px;
+    border-radius: 2px;
+    transition: all 0.2s;
+}
+
+/* Login — outlined */
+.login-btn {
+    background: transparent;
+    color: #f0ede8;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.login-btn:hover {
+    border-color: #a855f7;
+    color: #a855f7;
+    background: rgba(168, 85, 247, 0.06);
+}
+
+/* ── Admin dropdown ───────────────────────────────────────────────────────── */
+.admin-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.admin-link {
+    cursor: default;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: #a855f7 !important;
+    padding: 6px 12px;
+    border: 1px solid rgba(168, 85, 247, 0.25);
+    border-radius: 2px;
+    background: rgba(168, 85, 247, 0.06);
+    transition: border-color 0.2s, background 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.admin-link::before {
+    content: '◈';
+    font-size: 10px;
+    opacity: 0.7;
+}
+
+.admin-dropdown:hover .admin-link {
+    border-color: rgba(168, 85, 247, 0.5);
+    background: rgba(168, 85, 247, 0.1);
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    padding:8px;
+    left: 0;
+    background: #0e0e18;
+    min-width: 200px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 2px;
+    z-index: 1000;
+    overflow: hidden;
+
+    /* Subtle purple glow on the dropdown */
+    box-shadow:
+        0 20px 40px rgba(0, 0, 0, 0.6),
+        0 0 0 1px rgba(168, 85, 247, 0.1);
+}
+
+/* Top accent line on dropdown */
+.dropdown-menu::before {
+    content: '';
+    display: block;
+    height: 1px;
+    background: linear-gradient(to right, #a855f7, transparent);
+}
+
+.admin-dropdown:hover .dropdown-menu { display: block; }
+
+.dropdown-item {
+    color: rgba(240, 237, 232, 0.5) !important;
+    padding: 12px 18px;
+    text-decoration: none;
+    display: block;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    transition: color 0.15s, background 0.15s, padding-left 0.2s;
+}
+
+.dropdown-item:last-child { border-bottom: none; }
+
+.dropdown-item:hover {
+    color: #f0ede8 !important;
+    background: rgba(168, 85, 247, 0.06);
+    padding-left: 24px; /* subtle indent on hover */
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 700px) {
+    .navbar-content { padding: 0 20px; }
+    .navbar-header::after { left: 20px; }
+    .nav-item { display: none; }
+}
+
+.dropdown-item--danger {
+    color: #f87171;
+}
+.dropdown-item--danger:hover {
+    background: rgba(248, 113, 113, 0.08);
+    color: #fca5a5;
+}

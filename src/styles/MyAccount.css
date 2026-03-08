@@ -1,0 +1,288 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap');
+
+:root {
+    --bg:         #0a0a0f;
+    --surface:    #111118;
+    --surface-2:  #16161f;
+    --border:     rgba(255,255,255,0.07);
+    --text:       #f0ede8;
+    --text-sub:   rgba(240,237,232,0.5);
+    --text-muted: #3a3a4a;
+    --accent:     #a855f7;
+    --accent-dim: rgba(168,85,247,0.12);
+    --danger:     #f87171;
+}
+
+/* ── PAGE ────────────────────────────────────────────────────────────────── */
+.ma-page {
+    min-height: 100vh;
+    background: var(--bg);
+    font-family: 'DM Sans', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 80px 24px 120px;
+}
+
+.ma-inner {
+    width: 100%;
+    max-width: 560px;
+}
+
+/* ── LOADING ─────────────────────────────────────────────────────────────── */
+.ma-loading {
+    min-height: 100vh;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--text-muted);
+}
+
+/* ── HEADER ──────────────────────────────────────────────────────────────── */
+.ma-header {
+    margin-bottom: 48px;
+}
+
+.ma-eyebrow {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 3.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 0 0 20px;
+}
+
+.ma-identity {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.ma-avatar {
+    width: 64px;
+    height: 64px;
+    background: var(--accent-dim);
+    border: 1px solid rgba(168,85,247,0.3);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    font-style: italic;
+    color: var(--accent);
+    flex-shrink: 0;
+}
+
+.ma-username {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--text);
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin: 0;
+}
+
+.ma-rule {
+    height: 1px;
+    background: var(--border);
+    position: relative;
+}
+
+.ma-rule::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0;
+    width: 40px; height: 1px;
+    background: var(--accent);
+}
+
+/* ── SECTIONS ────────────────────────────────────────────────────────────── */
+.ma-section {
+    margin-bottom: 36px;
+}
+
+.ma-section__label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 0 0 12px;
+}
+
+.ma-bio {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--text-sub);
+    line-height: 1.7;
+    margin: 0;
+}
+
+/* URL row */
+.ma-url-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 12px 16px;
+}
+
+.ma-url-text {
+    flex: 1;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--accent);
+    text-decoration: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: opacity 0.2s;
+}
+
+.ma-url-text:hover { opacity: 0.7; }
+
+.ma-copy-btn {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 7px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-sub);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.ma-copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+.ma-copy-btn--copied {
+    background: rgba(74,222,128,0.1);
+    border-color: rgba(74,222,128,0.3);
+    color: #4ade80;
+}
+
+/* Divider */
+.ma-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 8px 0 40px;
+}
+
+/* ── ACTIONS ─────────────────────────────────────────────────────────────── */
+.ma-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.ma-edit-btn {
+    display: block;
+    text-align: center;
+    background: var(--accent);
+    color: #fff;
+    text-decoration: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 16px;
+    border-radius: 2px;
+    transition: background 0.2s, box-shadow 0.2s;
+}
+
+.ma-edit-btn:hover {
+    background: #9333ea;
+    box-shadow: 0 8px 24px rgba(168,85,247,0.25);
+}
+
+.ma-delete-btn {
+    background: none;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 8px 0;
+    text-align: center;
+    transition: color 0.2s;
+}
+
+.ma-delete-btn:hover { color: var(--danger); }
+
+/* ── CONFIRM ─────────────────────────────────────────────────────────────── */
+.ma-confirm {
+    background: rgba(248,113,113,0.05);
+    border: 1px solid rgba(248,113,113,0.15);
+    border-radius: 2px;
+    padding: 24px;
+    animation: confirmIn 0.25s ease;
+}
+
+@keyframes confirmIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.ma-confirm__text {
+    font-size: 13px;
+    color: rgba(248,113,113,0.8);
+    line-height: 1.6;
+    margin: 0 0 20px;
+    font-weight: 300;
+}
+
+.ma-confirm__btns {
+    display: flex;
+    gap: 8px;
+}
+
+.ma-confirm__yes,
+.ma-confirm__no {
+    flex: 1;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 12px;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: none;
+}
+
+.ma-confirm__yes {
+    background: rgba(248,113,113,0.15);
+    color: var(--danger);
+    border: 1px solid rgba(248,113,113,0.3);
+}
+.ma-confirm__yes:hover { background: rgba(248,113,113,0.25); }
+
+.ma-confirm__no {
+    background: var(--surface);
+    color: var(--text-sub);
+    border: 1px solid var(--border);
+}
+.ma-confirm__no:hover { color: var(--text); }

@@ -1,0 +1,73 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap');
+
+.site-footer {
+    background: #0a0a0f;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 32px 24px;
+}
+
+.site-footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.footer-brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-style: italic;
+    color: rgba(240, 237, 232, 0.3);
+}
+
+.footer-links {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.footer-link {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: rgba(240, 237, 232, 0.3);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+.footer-link:hover { color: rgba(240, 237, 232, 0.7); }
+
+.footer-dot {
+    font-size: 12px;
+    color: rgba(240, 237, 232, 0.15);
+}
+
+.footer-copy {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    color: rgba(240, 237, 232, 0.2);
+    margin: 0;
+}
+
+@media (max-width: 600px) {
+    .site-footer-inner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+}
+
+
+
+.entry-card__username {
+    font-size: 11px;
+    color: rgba(240, 237, 232, 0.45);
+    margin-top: 6px;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.entry-card__username:hover {
+    color: #a855f7;
+}

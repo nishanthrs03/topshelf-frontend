@@ -1,0 +1,393 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=DM+Sans:opsz,wght@9..40,200;9..40,300;9..40,400;9..40,500&display=swap');
+
+/* ── PAGE ────────────────────────────────────────────────────────────────── */
+.ed-page {
+    min-height: 100vh;
+    background: #07070e;
+    color: #f0ede8;
+    font-family: 'DM Sans', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    position: relative;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.ed-page--in { opacity: 1; }
+
+/* ── BACKDROP ────────────────────────────────────────────────────────────── */
+/*
+  The poster image is rendered full-screen, massively blurred and darkened.
+  This automatically bleeds the poster's dominant hues into the page atmosphere.
+  No color extraction needed — the browser does it naturally.
+*/
+.ed-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.ed-backdrop__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    filter: blur(80px) saturate(1.8) brightness(0.25);
+    transform: scale(1.1); /* prevent blur edge artifacts */
+}
+
+/* Extra dark vignette on top of blurred image */
+.ed-backdrop__fade {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse at center top, rgba(7,7,14,0.4) 0%, rgba(7,7,14,0.85) 70%),
+        linear-gradient(to bottom, rgba(7,7,14,0.3) 0%, rgba(7,7,14,0.95) 60%);
+}
+
+/* ── LOADING ─────────────────────────────────────────────────────────────── */
+.ed-loading {
+    min-height: 100vh;
+    background: #07070e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ed-loading__text {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: rgba(240,237,232,0.2);
+}
+
+/* ── BANNERS ─────────────────────────────────────────────────────────────── */
+.ed-banner {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 20px 32px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    max-width: 900px;
+    margin: 32px auto 0;
+    border-radius: 2px;
+}
+
+.ed-banner--pending {
+    background: rgba(251,191,36,0.08);
+    border: 1px solid rgba(251,191,36,0.2);
+    color: rgba(251,191,36,0.85);
+}
+
+.ed-banner--hidden {
+    background: rgba(248,113,113,0.08);
+    border: 1px solid rgba(248,113,113,0.2);
+    color: rgba(248,113,113,0.85);
+}
+
+.ed-banner strong { display: block; margin-bottom: 4px; font-weight: 600; }
+.ed-banner p { margin: 0; opacity: 0.8; }
+.ed-banner__reason { margin-top: 8px !important; font-style: italic; }
+
+/* ── LAYOUT ──────────────────────────────────────────────────────────────── */
+.ed-layout {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 80px;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 80px 48px 120px;
+    align-items: start;
+}
+
+/* ── POSTER COLUMN ───────────────────────────────────────────────────────── */
+.ed-poster-col {
+    position: sticky;
+    top: 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+}
+
+.ed-poster {
+    width: 100%;
+    aspect-ratio: 2/3;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow:
+        0 0 0 1px rgba(255,255,255,0.06),
+        0 32px 80px rgba(0,0,0,0.7),
+        0 8px 24px rgba(0,0,0,0.5);
+    animation: posterIn 0.7s cubic-bezier(0.16,1,0.3,1) both 0.1s;
+}
+
+@keyframes posterIn {
+    from { opacity: 0; transform: translateY(16px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.ed-poster__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.ed-poster__fallback {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #111118, #1a1a2e);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ed-poster__fallback span {
+    font-family: 'Playfair Display', serif;
+    font-size: 5rem;
+    font-weight: 900;
+    font-style: italic;
+    color: rgba(168,85,247,0.25);
+}
+
+/* Helpful */
+.ed-helpful {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.ed-helpful__btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    width: 52px;
+    height: 52px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 50%;
+    color: rgba(240,237,232,0.5);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.ed-helpful__icon {
+    font-size: 16px;
+    line-height: 1;
+}
+
+.ed-helpful__btn:hover:not(:disabled) {
+    background: rgba(168,85,247,0.15);
+    border-color: rgba(168,85,247,0.4);
+    color: #a855f7;
+    transform: scale(1.08);
+}
+
+.ed-helpful__btn--loading { opacity: 0.4; cursor: not-allowed; }
+
+.ed-helpful__label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(240,237,232,0.2);
+    margin: 0;
+}
+
+/* ── CONTENT ─────────────────────────────────────────────────────────────── */
+.ed-content {
+    padding-top: 8px;
+    animation: contentIn 0.7s cubic-bezier(0.16,1,0.3,1) both 0.2s;
+}
+
+@keyframes contentIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.ed-back {
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: rgba(240,237,232,0.25);
+    cursor: pointer;
+    margin-bottom: 48px;
+    display: inline-block;
+    transition: color 0.2s;
+}
+
+.ed-back:hover { color: rgba(240,237,232,0.7); }
+
+/* Meta */
+.ed-meta-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.ed-category {
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #a855f7;
+}
+
+.ed-genres {
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(240,237,232,0.25);
+}
+
+/* Title */
+.ed-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.4rem, 5vw, 4rem);
+    font-weight: 900;
+    font-style: italic;
+    line-height: 1.0;
+    letter-spacing: -0.025em;
+    color: #fff;
+    margin: 0 0 16px;
+}
+
+.ed-creator {
+    font-size: 15px;
+    font-weight: 300;
+    color: rgba(240,237,232,0.45);
+    font-style: italic;
+    margin: 0 0 20px;
+}
+
+/* Feeling */
+.ed-feeling {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(240,237,232,0.3);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 100px;
+    padding: 5px 14px;
+    backdrop-filter: blur(8px);
+}
+
+/* Rule */
+.ed-rule {
+    height: 1px;
+    background: rgba(255,255,255,0.07);
+    margin: 36px 0;
+    position: relative;
+}
+
+.ed-rule::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0;
+    width: 40px;
+    height: 1px;
+    background: #a855f7;
+}
+
+/* Notes */
+.ed-notes {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.05rem, 1.8vw, 1.3rem);
+    font-weight: 400;
+    font-style: italic;
+    line-height: 1.8;
+    color: rgba(240,237,232,0.8);
+    margin: 0 0 56px;
+    padding: 0;
+    border: none;
+    quotes: none;
+    white-space: pre-wrap;
+}
+
+/* Curator */
+.ed-curator {
+    padding-top: 32px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    margin-bottom: 48px;
+}
+
+.ed-curator__label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: rgba(240,237,232,0.2);
+    margin: 0 0 6px;
+}
+
+.ed-curator__name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: rgba(240,237,232,0.85);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.ed-curator__name:hover { color: #a855f7; }
+
+/* Footer */
+.ed-footer {
+    padding-top: 24px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.ed-footer__brand {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 13px;
+    color: rgba(240,237,232,0.15);
+    letter-spacing: 0.5px;
+}
+
+/* ── RESPONSIVE ──────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .ed-layout {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        padding: 48px 24px 80px;
+    }
+
+    .ed-poster-col {
+        position: static;
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 24px;
+    }
+
+    .ed-poster {
+        width: 120px;
+        flex-shrink: 0;
+    }
+
+    .ed-helpful { flex-direction: row; gap: 10px; align-items: center; }
+
+    .ed-title { font-size: 2.2rem; }
+}
