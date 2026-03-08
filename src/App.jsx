@@ -27,7 +27,7 @@ const ProtectedRoute=({children})=>{
       return <div>Loading..</div>
     }
     if(!user){
-      window.location.href="http://localhost:9090/oauth2/authorization/google"
+      window.location.href = `${import.meta.env.VITE_API_URL}/oauth2/authorization/google`
       return null;
     }
     if(!user.username){

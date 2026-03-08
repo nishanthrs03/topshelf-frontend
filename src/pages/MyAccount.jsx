@@ -39,7 +39,7 @@ const MyAccount = () => {
     const processDelete = async () => {
         try {
             await api.delete('/api/v1/account');
-            window.location.href = "http://localhost:9090/logout";
+            window.location.href = `${import.meta.env.VITE_API_URL}/logout`;
             setShowConfirm(false);
         } catch (err) {
             console.log("Error Deleting Profile", err);

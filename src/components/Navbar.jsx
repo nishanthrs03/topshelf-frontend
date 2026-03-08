@@ -38,10 +38,11 @@ const Navbar = () => {
                             <Link to="/add" className="nav-item">Write a Recommendation</Link>
                             <Link to="/mine" className="nav-item">My Collection</Link>
                             <Link to="/myaccount" className="nav-item">My Account</Link>
-                            <a href="http://localhost:9090/logout" className="nav-btn">Logout</a>
+                            <a href={`${import.meta.env.VITE_API_URL}/logout`} className="nav-btn">Logout</a>
+
                         </>
                     ) : (
-                        <a href="http://localhost:9090/oauth2/authorization/google" className="nav-btn login-btn">Login</a>
+                        <a href={`${import.meta.env.VITE_API_URL}/oauth2/authorization/google`} className="nav-btn login-btn">Login</a>
                     )}
                 </div>
             </div>
