@@ -15,6 +15,10 @@
     {
       "source": "/logout",
       "destination": "https://topshelf-backend.onrender.com/logout"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
