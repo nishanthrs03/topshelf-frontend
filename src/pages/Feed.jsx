@@ -4,10 +4,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import '../styles/Feed.css';
 
 const HERO_SLIDES = [
-    { image: 'https://m.media-amazon.com/images/M/MV5BZjdhOWZkMWUtYThhZC00OTIwLTgyMjQtNzQ1MGM0ZDdjZTM0XkEyXkFqcGc@._V1_.jpg', title: 'Marty Supreme', category: 'MOVIES', year: '2025' },
-    { image: 'https://s26162.pcdn.co/wp-content/uploads/2022/12/dolariad-design-luke-bird-1336x2048.jpg', title: 'Severance', category: 'TV SHOWS', year: '2022' },
-    { image: 'https://image.tmdb.org/t/p/original/uKvVjHNqB5VmOrdxqAt2F7J78ED.jpg', title: 'Dune', category: 'MOVIES', year: '2021' },
-    { image: 'https://image.tmdb.org/t/p/original/etj8E2o0Bud0HkONVQPjyCkIvpv.jpg', title: 'The Last of Us', category: 'TV SHOWS', year: '2023' },
+    { image: 'https://image.tmdb.org/t/p/original//563sRDK3rZS31TXCdTY4lfcwrNK.jpg', title: 'Nomadland', category: 'MOVIES', year: '2021' },
+    { image: 'https://image.tmdb.org/t/p/original//w8rTBScgj2MON7eGN7raoU5qChJ.jpg', title: 'Normal People', category: 'TV SHOWS', year: '2022' },
+    { image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTUNcy6ekPWuz7YOHtYbcfMZRZ19SVj1kNj-A&s', title: 'Dune', category: 'MOVIES', year: '2021' },
+    { image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS18QXopvXaNBQ4DgViCKIosyreyS6gD5Vgcw&s', title: 'The Last of Us', category: 'TV SHOWS', year: '2023' },
     { image: 'https://image.tmdb.org/t/p/original/mDeQHUSPREBWVNMtH8OzJMSwAhg.jpg', title: 'Interstellar', category: 'MOVIES', year: '2014' },
 ];
 
