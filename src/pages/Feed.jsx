@@ -4,11 +4,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import '../styles/Feed.css';
 
 const HERO_SLIDES = [
-    { image: 'https://image.tmdb.org/t/p/original//563sRDK3rZS31TXCdTY4lfcwrNK.jpg', title: 'Nomadland', category: 'MOVIES', year: '2021' },
-    { image: 'https://image.tmdb.org/t/p/original//w8rTBScgj2MON7eGN7raoU5qChJ.jpg', title: 'Normal People', category: 'TV SHOWS', year: '2022' },
-    { image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTUNcy6ekPWuz7YOHtYbcfMZRZ19SVj1kNj-A&s', title: 'Dune', category: 'MOVIES', year: '2021' },
-    { image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS18QXopvXaNBQ4DgViCKIosyreyS6gD5Vgcw&s', title: 'The Last of Us', category: 'TV SHOWS', year: '2023' },
-    { image: 'https://image.tmdb.org/t/p/original/mDeQHUSPREBWVNMtH8OzJMSwAhg.jpg', title: 'Interstellar', category: 'MOVIES', year: '2014' },
+    { image: 'https://image.tmdb.org/t/p/original//563sRDK3rZS31TXCdTY4lfcwrNK.jpg', title: '', category: 'MOVIES', year: '' },
+    { image: 'https://image.tmdb.org/t/p/original//w8rTBScgj2MON7eGN7raoU5qChJ.jpg', title: '', category: 'TV SHOWS', year: '' },
+    { image: 'https://image.tmdb.org/t/p/original//1LYWnmr5K3Hs3XEZ323bY0dBZsK.jpg', title: '', category: 'MUSIC', year: '' },
+    { image: 'https://media.rawg.io/media/games/840/8408ad3811289a6a5830cae60fb0b62a.jpg', title: '', category: 'VIDEO GAMES', year: '' },
 ];
 
 const Feed = () => {
