@@ -30,6 +30,17 @@ const UserProfile = () => {
     const [activeCategory, setActiveCategory] = useState('ALL');
     const [heroLoaded, setHeroLoaded] = useState(false);
 
+    // NEW: Dedicated function to fetch the public bio
+    const fetchBio = async () => {
+        try {
+            const res = await api.get(`/api/v1/account/public/${username}`);
+            setBio(res.data.bio);
+        } catch (err) {
+            console.error("Could not fetch user bio:", err);
+            setBio(null);
+        }
+    };
+
     const fetchEntries = async (pageNum = 0, reset = false) => {
         if (reset) setLoading(true);
         else setLoadingMore(true);
@@ -42,9 +53,8 @@ const UserProfile = () => {
             setHasMore(!data.last);
             setTotalEntries(data.totalElements);
             setPage(pageNum);
-
-            // grab bio from first entry's user if available, or from a dedicated field
-            if (reset && data.bio) setBio(data.bio);
+            
+            // CLEANUP: Removed the old incorrect bio assignment here
         } catch (err) {
             console.error(err);
         } finally {
@@ -58,6 +68,9 @@ const UserProfile = () => {
         setPage(0);
         setActiveCategory('ALL');
         setHeroLoaded(false);
+        
+        // Trigger both calls
+        fetchBio();
         fetchEntries(0, true);
     }, [username]);
 
@@ -65,6 +78,7 @@ const UserProfile = () => {
         if (!loading) setTimeout(() => setHeroLoaded(true), 80);
     }, [loading]);
 
+    // ... (rest of your useMemo logic stays exactly the same)
     const categories = useMemo(() =>
         [...new Set(entries.map(e => e.category?.toUpperCase()).filter(Boolean))],
         [entries]);
@@ -109,8 +123,6 @@ const UserProfile = () => {
 
     return (
         <div className="up-page">
-
-            {/* HERO */}
             <div className="up-hero">
                 <div className="up-mosaic">
                     {heroImages.map((img, i) => (
@@ -130,6 +142,7 @@ const UserProfile = () => {
                     <div className="up-hero__identity">
                         <p className="up-hero__eyebrow">The taste of</p>
                         <h1 className="up-hero__name">{username}</h1>
+                        {/* Displaying the bio fetched from the NEW public API */}
                         {bio && <p className="up-hero__bio">{bio}</p>}
                     </div>
 
@@ -170,7 +183,7 @@ const UserProfile = () => {
                 </div>
             </div>
 
-            {/* GRID */}
+            {/* (Grid rendering remains the same as before) */}
             {filtered.length > 0 ? (
                 <div className="up-collection">
                     {activeCatColor && (
@@ -208,7 +221,6 @@ const UserProfile = () => {
                                     )}
 
                                     <div className="up-card__veil" />
-
                                     <div className="up-card__strip">
                                         <p className="up-card__strip-title">{entry.title}</p>
                                     </div>
