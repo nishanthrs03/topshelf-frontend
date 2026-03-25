@@ -64,7 +64,7 @@ function App() {
     <Router>
       <Navbar/>
         <Routes>
-          <Route path="/" element={user && !user.username ? <Navigate to='/signup' replace/>:<Feed/>}/>
+          <Route path="/" element={<Feed/>}/>
           <Route path="/entry/:id" element={<EntryDetail/>}/>
           <Route path="/community" element={<Community />} />
           <Route path="/user/:username" element={<UserProfile />} />
@@ -84,7 +84,6 @@ function App() {
               <ProtectedRoute>
                   <MyEntries/>
                 </ProtectedRoute>}/>
-            <Route path="/signup" element={user && !user.username? <Signup/>:<Navigate to='/' replace/>}/>
             <Route path="/edit/:id" element={
               <ProtectedRoute>
                   <AddEntry/>

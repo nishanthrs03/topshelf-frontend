@@ -86,9 +86,6 @@ const Feed = () => {
                         <h2 className="hero__tagline">
                             Share what moves<br /><em>you.</em>
                         </h2>
-                        <p className="hero__sub">
-                                {totalEntries} recommendations from real people — only the ones that truly stayed with them.
-                        </p>
                         <Link to="/find" className="hero__cta">
                             Explore the collection →
                         </Link>

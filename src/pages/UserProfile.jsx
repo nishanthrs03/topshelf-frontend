@@ -21,6 +21,7 @@ const UserProfile = () => {
     const { username } = useParams();
     const navigate = useNavigate();
     const [entries, setEntries] = useState([]);
+    const [bio, setBio] = useState(null);
     const [loading, setLoading] = useState(true);
     const [loadingMore, setLoadingMore] = useState(false);
     const [page, setPage] = useState(0);
@@ -41,6 +42,9 @@ const UserProfile = () => {
             setHasMore(!data.last);
             setTotalEntries(data.totalElements);
             setPage(pageNum);
+
+            // grab bio from first entry's user if available, or from a dedicated field
+            if (reset && data.bio) setBio(data.bio);
         } catch (err) {
             console.error(err);
         } finally {
@@ -50,6 +54,7 @@ const UserProfile = () => {
 
     useEffect(() => {
         setEntries([]);
+        setBio(null);
         setPage(0);
         setActiveCategory('ALL');
         setHeroLoaded(false);
@@ -125,6 +130,7 @@ const UserProfile = () => {
                     <div className="up-hero__identity">
                         <p className="up-hero__eyebrow">The taste of</p>
                         <h1 className="up-hero__name">{username}</h1>
+                        {bio && <p className="up-hero__bio">{bio}</p>}
                     </div>
 
                     <p className="up-hero__prose">
@@ -203,12 +209,10 @@ const UserProfile = () => {
 
                                     <div className="up-card__veil" />
 
-                                    {/* Always-visible title strip at bottom */}
                                     <div className="up-card__strip">
                                         <p className="up-card__strip-title">{entry.title}</p>
                                     </div>
 
-                                    {/* Hover overlay */}
                                     <div className="up-card__over">
                                         <span className="up-card__over-cat" style={{ color: col.from }}>
                                             {entry.category}
