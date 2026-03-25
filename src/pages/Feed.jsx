@@ -112,9 +112,6 @@ const Feed = () => {
             <div className="feed-masthead-wrapper">
                 <header className="feed-masthead">
                     <div>
-                        <p className="feed-masthead__eyebrow">
-                            {totalEntries} picks · {new Date().toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })}
-                        </p>
                         <h1 className="feed-masthead__title">
                             The <em>Collection</em>
                         </h1>
