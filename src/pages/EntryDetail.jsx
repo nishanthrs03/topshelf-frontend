@@ -1,19 +1,27 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import api from '../services/api';
+import { useAuth } from '../context/AuthContext';
 import '../styles/EntryDetail.css';
 
 const EntryDetail = () => {
     const navigate = useNavigate();
     const { id } = useParams();
+    const { user } = useAuth();
     const [entry, setEntry] = useState(null);
     const [helpfulCount, setHelpfulCount] = useState(0);
     const [isUpdating, setIsUpdating] = useState(false);
     const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
-        const fetchEntry = api.get(`/api/v1/entry/${id}`);
+        const isAdmin = user?.role === 'ADMIN';
+        const entryEndpoint = isAdmin
+            ? `/api/v1/admin/entry/${id}`
+            : `/api/v1/entry/${id}`;
+
+        const fetchEntry = api.get(entryEndpoint);
         const fetchCount = api.get(`/api/v1/entry/helpful-count/${id}`);
+
         Promise.all([fetchEntry, fetchCount])
             .then(([entryRes, countRes]) => {
                 setEntry(entryRes.data);
@@ -21,7 +29,7 @@ const EntryDetail = () => {
                 setTimeout(() => setLoaded(true), 60);
             })
             .catch(console.error);
-    }, [id]);
+    }, [id, user]);
 
     const handleHelpful = async () => {
         if (isUpdating) return;
@@ -52,7 +60,6 @@ const EntryDetail = () => {
     return (
         <div className={`ed-page ${loaded ? 'ed-page--in' : ''}`}>
 
-            {/* ── BACKDROP — blurred poster creates the hue ── */}
             {entry.imageUrl && (
                 <div className="ed-backdrop">
                     <img src={entry.imageUrl} alt="" className="ed-backdrop__img" />
@@ -60,7 +67,6 @@ const EntryDetail = () => {
                 </div>
             )}
 
-            {/* ── MODERATION BANNERS ── */}
             {entry.status === 'PENDING_REVIEW' && (
                 <div className="ed-banner ed-banner--pending">
                     <span>⏳</span>
@@ -83,10 +89,8 @@ const EntryDetail = () => {
                 </div>
             )}
 
-            {/* ── MAIN LAYOUT ── */}
             <div className="ed-layout">
 
-                {/* LEFT — Poster */}
                 <aside className="ed-poster-col">
                     <div className="ed-poster">
                         {entry.imageUrl ? (
@@ -102,7 +106,6 @@ const EntryDetail = () => {
                         )}
                     </div>
 
-                    {/* Helpful — tucked under poster */}
                     <div className="ed-helpful">
                         <button
                             className={`ed-helpful__btn ${isUpdating ? 'ed-helpful__btn--loading' : ''}`}
@@ -116,7 +119,6 @@ const EntryDetail = () => {
                     </div>
                 </aside>
 
-                {/* RIGHT — Content */}
                 <main className="ed-content">
                     <button
                         onClick={() => navigate(-1)}
@@ -125,7 +127,6 @@ const EntryDetail = () => {
                         ← Back
                     </button>
 
-                    {/* Category + genre */}
                     <div className="ed-meta-top">
                         <span className="ed-category">{entry.category}</span>
                         {entry.genre && (
@@ -133,26 +134,21 @@ const EntryDetail = () => {
                         )}
                     </div>
 
-                    {/* Title */}
                     <h1 className="ed-title">{entry.title}</h1>
                     <p className="ed-creator">by {entry.creator}</p>
 
-                    {/* Feeling */}
                     {entry.feeling && (
                         <span className="ed-feeling">
                             {entry.feeling.replace(/_/g, ' ').toLowerCase()}
                         </span>
                     )}
 
-                    {/* Divider */}
                     <div className="ed-rule" />
 
-                    {/* The recommendation */}
                     <blockquote className="ed-notes">
                         {entry.notes}
                     </blockquote>
 
-                    {/* Curator */}
                     <div className="ed-curator">
                         <p className="ed-curator__label">Recommended by</p>
                         <Link
@@ -162,8 +158,6 @@ const EntryDetail = () => {
                             {entry.username}
                         </Link>
                     </div>
-
-                    
                 </main>
             </div>
         </div>
