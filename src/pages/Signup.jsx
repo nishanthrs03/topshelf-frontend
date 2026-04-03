@@ -58,13 +58,14 @@ const Signup = () => {
                     </div>
 
                     <div className="su-field">
-                        <label className="su-label">Bio <span className="su-optional">— optional</span></label>
+                        <label className="su-label">Bio </label>
                         <textarea
                             className="su-textarea"
                             placeholder="a few words about your taste…"
                             value={bio}
                             onChange={e => setBio(e.target.value)}
                             rows={4}
+                            required
                         />
                     </div>
 
@@ -90,7 +91,7 @@ const Signup = () => {
                     <button
                         type="submit"
                         className="su-submit"
-                        disabled={loading || !username.trim() || !termsAccepted}
+                        disabled={loading || !username.trim() || !bio.trim() || !termsAccepted}
                     >
                         {loading ? 'Setting up…' : 'Complete Profile'}
                     </button>

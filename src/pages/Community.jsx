@@ -99,7 +99,7 @@ const Community = () => {
                                     <div className="user-card-body">
                                         <h3 className="user-card-name">{user.username}</h3>
                                         <p className="user-card-bio">
-                                            {user.bio || 'No bio yet — their picks speak for themselves.'}
+                                            {user.bio || ''}
                                         </p>
                                     </div>
                                     <span className="user-card-cta">View profile →</span>
