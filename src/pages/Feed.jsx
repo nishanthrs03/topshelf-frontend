@@ -87,7 +87,7 @@ const Feed = () => {
                             Share what moves<br /><em>you.</em>
                         </h2>
                         <Link to="/find" className="hero__cta">
-                            Find a Recommendation →
+                            Explore the Collection →
                         </Link>
 
                     </div>
