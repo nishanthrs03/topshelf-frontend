@@ -57,13 +57,21 @@ const TITLE_PLACEHOLDER = {
 
 const displayGenre = (g) => GENRE_DISPLAY[g] || g.replace(/_/g, ' ');
 
+// ✅ Proxy helper — same as Feed.jsx and SearchEntry.jsx
+const getProxiedImageUrl = (url) => {
+    if (!url) return null;
+    if (url.includes('archive.org') || url.includes('coverartarchive.org')) {
+        return `/imageproxy?url=${encodeURIComponent(url)}`;
+    }
+    return url;
+};
+
 const AddEntry = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
     const { id } = useParams();
     const isEditMode = !!id;
 
-    // ── Form state ────────────────────────────────────────────────────────────
     const [notes, setNotes] = useState('');
     const [feeling, setFeeling] = useState('');
     const [category, setCategory] = useState('');
@@ -72,7 +80,6 @@ const AddEntry = () => {
     const [genreError, setGenreError] = useState(false);
     const [dataLoaded, setDataLoaded] = useState(false);
 
-    // ── Search state ──────────────────────────────────────────────────────────
     const [query, setQuery] = useState('');
     const [creator, setCreator] = useState('');
     const [searchResults, setSearchResults] = useState([]);
@@ -82,16 +89,13 @@ const AddEntry = () => {
     const [pickerError, setPickerError] = useState(false);
     const [expandedImage, setExpandedImage] = useState(null);
 
-    // ── Edit-mode state ───────────────────────────────────────────────────────
     const [originalExternalId, setOriginalExternalId] = useState(null);
     const [changingContent, setChangingContent] = useState(false);
     const originalResultRef = useRef(null);
 
-    // ── Filter state ──────────────────────────────────────────────────────────
     const [genreSearch, setGenreSearch] = useState('');
     const [feelingSearch, setFeelingSearch] = useState('');
 
-    // ── Fetch entry (edit mode) ───────────────────────────────────────────────
     useEffect(() => {
         if (!id) return;
         const fetchEntry = async () => {
@@ -122,13 +126,12 @@ const AddEntry = () => {
             } catch (err) {
                 console.error("Fetch error:", err);
             } finally {
-                setDataLoaded(true); // ← always fires here
+                setDataLoaded(true);
             }
         };
         fetchEntry();
     }, [id]);
 
-    // ── Content search ────────────────────────────────────────────────────────
     useEffect(() => {
         if (!category || query.length < 2) {
             setSearchResults([]);
@@ -208,7 +211,6 @@ const AddEntry = () => {
         }
     };
 
-    // ── Loading guard ─────────────────────────────────────────────────────────
     if (isEditMode && !dataLoaded) {
         return <div className="loading-container">Loading...</div>;
     }
@@ -270,8 +272,9 @@ const AddEntry = () => {
             {selectedResult && !changingContent && (
                 <div className="selected-card">
                     <div className="selected-card-image-wrap">
+                        {/* ✅ Proxy applied */}
                         <img
-                            src={selectedResult.imageUrl}
+                            src={getProxiedImageUrl(selectedResult.imageUrl)}
                             alt={selectedResult.title}
                             className="selected-card-image"
                             onClick={() => setExpandedImage(selectedResult.imageUrl)}
@@ -322,7 +325,8 @@ const AddEntry = () => {
                                     }
                                 }}
                             >
-                                <img src={result.imageUrl} alt={result.title} />
+                                {/* ✅ Proxy applied */}
+                                <img src={getProxiedImageUrl(result.imageUrl)} alt={result.title} />
                                 <div className="picker-item-meta">
                                     <span className="image-picker-item-title">{result.title}</span>
                                     {result.year && <span className="picker-item-year">{result.year}</span>}
@@ -361,14 +365,13 @@ const AddEntry = () => {
                     {isEditMode ? 'Edit your' : 'Write a'} <em>recommendation</em>
                 </h2>
                 <p className="form-subtitle">
-    {isEditMode
-        ? 'Update your pick — changes go back to review.'
-        : 'Only add what genuinely stayed with you — the 9/10s, the ones you\'d press into someone\'s hands.'}
-</p>
+                    {isEditMode
+                        ? 'Update your pick — changes go back to review.'
+                        : 'Only add what genuinely stayed with you — the 9/10s, the ones you\'d press into someone\'s hands.'}
+                </p>
 
                 <form onSubmit={handleSubmit}>
 
-                    {/* ── Category ── */}
                     <div className="input-group">
                         <label>Category</label>
                         <select value={category} onChange={handleCategoryChange} required>
@@ -379,16 +382,15 @@ const AddEntry = () => {
                         </select>
                     </div>
 
-                    {/* ── Search picker (add mode) ── */}
                     {!isEditMode && category && renderSearchPicker()}
 
-                    {/* ── Edit mode ── */}
                     {isEditMode && (
                         <>
                             {selectedResult && !changingContent && (
                                 <div className="locked-content-card">
+                                    {/* ✅ Proxy applied */}
                                     <img
-                                        src={selectedResult.imageUrl}
+                                        src={getProxiedImageUrl(selectedResult.imageUrl)}
                                         alt={selectedResult.title}
                                         onClick={() => setExpandedImage(selectedResult.imageUrl)}
                                     />
@@ -422,7 +424,6 @@ const AddEntry = () => {
 
                     <div className="form-divider" />
 
-                    {/* ── Genre ── */}
                     {category && (
                         <div className="input-group">
                             <label>
@@ -458,7 +459,6 @@ const AddEntry = () => {
                         </div>
                     )}
 
-                    {/* ── Feeling ── */}
                     <div className="input-group">
                         <label>Feeling</label>
                         <input
@@ -487,7 +487,6 @@ const AddEntry = () => {
                         </div>
                     </div>
 
-                    {/* ── Notes ── */}
                     <div className="input-group">
                         <label>Why do you recommend this?</label>
                         <textarea
@@ -516,10 +515,11 @@ const AddEntry = () => {
                 </form>
             </div>
 
+            {/* ✅ Modal also proxied */}
             {expandedImage && (
                 <div className="image-modal-overlay" onClick={() => setExpandedImage(null)}>
                     <div className="image-modal-content" onClick={e => e.stopPropagation()}>
-                        <img src={expandedImage} alt="Cover" />
+                        <img src={getProxiedImageUrl(expandedImage)} alt="Cover" />
                         <button className="image-modal-close" onClick={() => setExpandedImage(null)}>✕</button>
                     </div>
                 </div>
