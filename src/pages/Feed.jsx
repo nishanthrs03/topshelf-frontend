@@ -10,6 +10,17 @@ const HERO_SLIDES = [
     { image: 'https://media.rawg.io/media/games/840/8408ad3811289a6a5830cae60fb0b62a.jpg', title: '', category: 'VIDEO GAMES', year: '' },
 ];
 
+// ✅ Image proxy helper
+const getProxiedImageUrl = (url) => {
+    if (!url) return null;
+
+    if (url.includes('archive.org')) {
+        return `/imageproxy?url=${encodeURIComponent(url)}`;
+    }
+
+    return url;
+};
+
 const Feed = () => {
     const [entries, setEntries] = useState([]);
     const [sortBy, setSortBy] = useState('newest');
@@ -36,7 +47,10 @@ const Feed = () => {
     const goToSlide = (i) => {
         if (i === currentSlide) return;
         setTransitioning(true);
-        setTimeout(() => { setCurrentSlide(i); setTransitioning(false); }, 400);
+        setTimeout(() => {
+            setCurrentSlide(i);
+            setTransitioning(false);
+        }, 400);
         clearInterval(slideTimer.current);
     };
 
@@ -46,11 +60,14 @@ const Feed = () => {
             const res = await api.get('/api/v1/entry', {
                 params: { sort: sortBy, page: pageNum, size: 20 }
             });
+
             const data = res.data;
+
             setEntries(prev => reset ? data.content : [...prev, ...data.content]);
             setHasMore(!data.last);
             setTotalEntries(data.totalElements);
             setPage(pageNum);
+
         } catch (err) {
             console.error('Failed to fetch entries', err);
         } finally {
@@ -74,7 +91,7 @@ const Feed = () => {
             <section className="hero">
                 <div
                     className={`hero__bg ${transitioning ? 'hero__bg--out' : 'hero__bg--in'}`}
-                    style={{ backgroundImage: `url(${slide.image})` }}
+                    style={{ backgroundImage: `url(${getProxiedImageUrl(slide.image)})` }} // optional proxy
                 />
                 <div className="hero__vignette-bottom" />
                 <div className="hero__vignette-top" />
@@ -89,53 +106,21 @@ const Feed = () => {
                         <Link to="/find" className="hero__cta">
                             Explore the Collection →
                         </Link>
-
                     </div>
+
                     <div className="hero__dots">
                         {HERO_SLIDES.map((_, i) => (
                             <button
                                 key={i}
                                 className={`hero__dot ${i === currentSlide ? 'hero__dot--active' : ''}`}
                                 onClick={() => goToSlide(i)}
-                                aria-label={`Slide ${i + 1}`}
                             />
                         ))}
-                    </div>
-                    <div className="hero__slide-label">
-                        <span className="hero__slide-title">{slide.title}</span>
-                        <span className="hero__slide-year">{slide.year}</span>
                     </div>
                 </div>
             </section>
 
-            {/* ── MASTHEAD — padded ── */}
-            <div className="feed-masthead-wrapper">
-                <header className="feed-masthead">
-                    <div>
-                        <h1 className="feed-masthead__title">
-                            The <em>Collection</em>
-                        </h1>
-                    </div>
-                    <div className="sort-bar">
-                        {[
-                            { key: 'newest', label: 'Latest' },
-                            { key: 'trending', label: 'Trending' },
-                            { key: 'top', label: 'Most Praised' },
-                        ].map(({ key, label }) => (
-                            <button
-                                key={key}
-                                className={sortBy === key ? 'active' : ''}
-                                onClick={() => setSortBy(key)}
-                            >
-                                {label}
-                            </button>
-                        ))}
-                    </div>
-                </header>
-                <div className="feed-rule" />
-            </div>
-
-            {/* ── GRID — truly full width, no wrapper, no padding ── */}
+            {/* ── GRID ── */}
             {loading && entries.length === 0 ? (
                 <div className="feed-loading"><span /></div>
             ) : entries.length === 0 ? (
@@ -150,7 +135,7 @@ const Feed = () => {
                         >
                             {entry.imageUrl ? (
                                 <img
-                                    src={entry.imageUrl}
+                                    src={getProxiedImageUrl(entry.imageUrl)} // ✅ HERE
                                     alt={entry.title}
                                     className="entry-card__img"
                                 />
@@ -161,24 +146,29 @@ const Feed = () => {
                                     </span>
                                 </div>
                             )}
+
                             <div className="entry-card__veil" />
+
                             <div className="entry-card__body">
-    <span className="entry-card__category">{entry.category}</span>
-    <h3 className="entry-card__title">{entry.title}</h3>
-    <p className="entry-card__meta">{entry.creator}</p>
-    <p
-        className="entry-card__username"
-        onClick={e => { e.stopPropagation(); navigate(`/user/${entry.username}`); }}
-    >
-        @{entry.username}
-    </p>
-</div>
+                                <span className="entry-card__category">{entry.category}</span>
+                                <h3 className="entry-card__title">{entry.title}</h3>
+                                <p className="entry-card__meta">{entry.creator}</p>
+                                <p
+                                    className="entry-card__username"
+                                    onClick={e => {
+                                        e.stopPropagation();
+                                        navigate(`/user/${entry.username}`);
+                                    }}
+                                >
+                                    @{entry.username}
+                                </p>
+                            </div>
                         </div>
                     ))}
                 </section>
             )}
 
-            {/* ── LOAD MORE — padded ── */}
+            {/* ── LOAD MORE ── */}
             {hasMore && (
                 <div className="feed-masthead-wrapper">
                     <div className="load-more-wrap">

@@ -4,6 +4,17 @@ import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import '../styles/EntryDetail.css';
 
+// ✅ Image Proxy Helper
+const getProxiedImageUrl = (url) => {
+    if (!url) return null;
+
+    if (url.includes('archive.org')) {
+        return `/imageproxy?url=${encodeURIComponent(url)}`;
+    }
+
+    return url;
+};
+
 const EntryDetail = () => {
     const navigate = useNavigate();
     const { id } = useParams();
@@ -60,13 +71,19 @@ const EntryDetail = () => {
     return (
         <div className={`ed-page ${loaded ? 'ed-page--in' : ''}`}>
 
+            {/* ── BACKDROP ── */}
             {entry.imageUrl && (
                 <div className="ed-backdrop">
-                    <img src={entry.imageUrl} alt="" className="ed-backdrop__img" />
+                    <img
+                        src={getProxiedImageUrl(entry.imageUrl)} // ✅ HERE
+                        alt=""
+                        className="ed-backdrop__img"
+                    />
                     <div className="ed-backdrop__fade" />
                 </div>
             )}
 
+            {/* ── STATUS BANNERS ── */}
             {entry.status === 'PENDING_REVIEW' && (
                 <div className="ed-banner ed-banner--pending">
                     <span>⏳</span>
@@ -76,6 +93,7 @@ const EntryDetail = () => {
                     </div>
                 </div>
             )}
+
             {entry.status === 'HIDDEN' && (
                 <div className="ed-banner ed-banner--hidden">
                     <span>🚫</span>
@@ -83,7 +101,9 @@ const EntryDetail = () => {
                         <strong>Entry Hidden</strong>
                         <p>This content was removed from public view.</p>
                         {entry.moderationReason && (
-                            <p className="ed-banner__reason"><strong>Reason:</strong> {entry.moderationReason}</p>
+                            <p className="ed-banner__reason">
+                                <strong>Reason:</strong> {entry.moderationReason}
+                            </p>
                         )}
                     </div>
                 </div>
@@ -91,11 +111,12 @@ const EntryDetail = () => {
 
             <div className="ed-layout">
 
+                {/* ── POSTER ── */}
                 <aside className="ed-poster-col">
                     <div className="ed-poster">
                         {entry.imageUrl ? (
                             <img
-                                src={entry.imageUrl}
+                                src={getProxiedImageUrl(entry.imageUrl)} // ✅ HERE
                                 alt={entry.title}
                                 className="ed-poster__img"
                             />
@@ -119,7 +140,9 @@ const EntryDetail = () => {
                     </div>
                 </aside>
 
+                {/* ── CONTENT ── */}
                 <main className="ed-content">
+
                     <button
                         onClick={() => navigate(-1)}
                         className="ed-back"
@@ -158,6 +181,7 @@ const EntryDetail = () => {
                             {entry.username}
                         </Link>
                     </div>
+
                 </main>
             </div>
         </div>

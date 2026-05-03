@@ -9,6 +9,17 @@ const STATUSES = [
     { key: 'HIDDEN',         label: 'Hidden' },
 ];
 
+// ✅ Image Proxy Helper
+const getProxiedImageUrl = (url) => {
+    if (!url) return null;
+
+    if (url.includes('archive.org')) {
+        return `/imageproxy?url=${encodeURIComponent(url)}`;
+    }
+
+    return url;
+};
+
 const MyEntries = () => {
     const navigate = useNavigate();
     const [entries, setEntries] = useState([]);
@@ -75,7 +86,7 @@ const MyEntries = () => {
                 <div className="me-header__rule" />
             </div>
 
-            {/* ── STATUS FILTER — segmented, not tabs ── */}
+            {/* ── STATUS FILTER ── */}
             <div className="me-filters">
                 <div className="me-seg">
                     {STATUSES.map(s => (
@@ -119,7 +130,7 @@ const MyEntries = () => {
                             <div className="me-card__poster" onClick={() => navigate(`/entry/${entry.id}`)}>
                                 {entry.imageUrl ? (
                                     <img
-                                        src={entry.imageUrl}
+                                        src={getProxiedImageUrl(entry.imageUrl)} // ✅ HERE
                                         alt={entry.title}
                                         className="me-card__img"
                                     />
@@ -130,16 +141,15 @@ const MyEntries = () => {
                                 )}
                                 <div className="me-card__veil" />
 
-                                {/* Status dot */}
                                 {status === 'PENDING_REVIEW' && (
-                                    <span className="me-card__status me-card__status--pending" title="Pending Review" />
+                                    <span className="me-card__status me-card__status--pending" />
                                 )}
                                 {status === 'HIDDEN' && (
-                                    <span className="me-card__status me-card__status--hidden" title="Hidden" />
+                                    <span className="me-card__status me-card__status--hidden" />
                                 )}
                             </div>
 
-                            {/* Info + actions */}
+                            {/* Info */}
                             <div className="me-card__body">
                                 <p className="me-card__category">{entry.category}</p>
                                 <h3 className="me-card__title">{entry.title}</h3>

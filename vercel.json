@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/imageproxy",
+      "destination": "https://topshelf-proxy.rnishanth975.workers.dev/imageproxy"
+    },
+    {
       "source": "/api/:path*",
       "destination": "https://topshelf-proxy.rnishanth975.workers.dev/api/:path*"
     },
@@ -11,6 +15,10 @@
     {
       "source": "/login/:path*",
       "destination": "https://topshelf-proxy.rnishanth975.workers.dev/login/:path*"
+    },
+    {
+      "source": "/login/oauth2/code/:path*",
+      "destination": "https://topshelf-proxy.rnishanth975.workers.dev/login/oauth2/code/:path*"
     },
     {
       "source": "/logout",

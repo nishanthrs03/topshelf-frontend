@@ -1,8 +1,9 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import '../styles/UserProfile.css';
 
+// --- Constants & Helpers ---
 const CATEGORY_COLORS = {
     'MOVIES':      { from: '#FF6B35', to: '#F7C59F' },
     'TV SHOWS':    { from: '#E84393', to: '#FF9ECD' },
@@ -17,9 +18,21 @@ const DEFAULT_COLOR = { from: '#a855f7', to: '#ec4899' };
 const formatLabel = (str) =>
     str?.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase()) || '';
 
+// 1. Added Image Proxy Helper Function
+const getProxiedImageUrl = (url) => {
+    if (!url) return null;
+    // Only proxy if it's an archive.org link
+    if (url.includes('archive.org')) {
+        return `/imageproxy?url=${encodeURIComponent(url)}`;
+    }
+    return url;
+};
+
 const UserProfile = () => {
     const { username } = useParams();
     const navigate = useNavigate();
+
+    // --- State ---
     const [entries, setEntries] = useState([]);
     const [bio, setBio] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -30,8 +43,8 @@ const UserProfile = () => {
     const [activeCategory, setActiveCategory] = useState('ALL');
     const [heroLoaded, setHeroLoaded] = useState(false);
 
-    // NEW: Dedicated function to fetch the public bio
-    const fetchBio = async () => {
+    // --- Data Fetching ---
+    const fetchBio = useCallback(async () => {
         try {
             const res = await api.get(`/api/v1/account/public/${username}`);
             setBio(res.data.bio);
@@ -39,28 +52,29 @@ const UserProfile = () => {
             console.error("Could not fetch user bio:", err);
             setBio(null);
         }
-    };
+    }, [username]);
 
-    const fetchEntries = async (pageNum = 0, reset = false) => {
+    const fetchEntries = useCallback(async (pageNum = 0, reset = false) => {
         if (reset) setLoading(true);
         else setLoadingMore(true);
+        
         try {
             const res = await api.get('/api/v1/entry', {
                 params: { username, page: pageNum, size: 40 }
             });
-            const data = res.data;
-            setEntries(prev => reset ? data.content : [...prev, ...data.content]);
-            setHasMore(!data.last);
-            setTotalEntries(data.totalElements);
-            setPage(pageNum);
+            const { content, last, totalElements } = res.data;
             
-            // CLEANUP: Removed the old incorrect bio assignment here
+            setEntries(prev => reset ? content : [...prev, ...content]);
+            setHasMore(!last);
+            setTotalEntries(totalElements);
+            setPage(pageNum);
         } catch (err) {
-            console.error(err);
+            console.error("Error fetching entries:", err);
         } finally {
             setLoading(false);
+            setLoadingMore(false);
         }
-    };
+    }, [username]);
 
     useEffect(() => {
         setEntries([]);
@@ -69,40 +83,49 @@ const UserProfile = () => {
         setActiveCategory('ALL');
         setHeroLoaded(false);
         
-        // Trigger both calls
         fetchBio();
         fetchEntries(0, true);
-    }, [username]);
+    }, [username, fetchBio, fetchEntries]);
 
     useEffect(() => {
-        if (!loading) setTimeout(() => setHeroLoaded(true), 80);
+        if (!loading) {
+            const timer = setTimeout(() => setHeroLoaded(true), 80);
+            return () => clearTimeout(timer);
+        }
     }, [loading]);
 
-    // ... (rest of your useMemo logic stays exactly the same)
+    // --- Memoized Derived State ---
     const categories = useMemo(() =>
         [...new Set(entries.map(e => e.category?.toUpperCase()).filter(Boolean))],
         [entries]);
 
     const filtered = useMemo(() =>
-        activeCategory === 'ALL' ? entries : entries.filter(e => e.category?.toUpperCase() === activeCategory),
+        activeCategory === 'ALL' 
+            ? entries 
+            : entries.filter(e => e.category?.toUpperCase() === activeCategory),
         [entries, activeCategory]);
 
-    const topCategory = useMemo(() => {
-        if (!entries.length) return null;
-        const counts = {};
-        entries.forEach(e => { if (e.category) counts[e.category.toUpperCase()] = (counts[e.category.toUpperCase()] || 0) + 1; });
-        return Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0];
+    const stats = useMemo(() => {
+        if (!entries.length) return { topCat: null, topFeel: null };
+        const catCounts = {};
+        const feelCounts = {};
+        entries.forEach(e => {
+            if (e.category) {
+                const c = e.category.toUpperCase();
+                catCounts[c] = (catCounts[c] || 0) + 1;
+            }
+            if (e.feeling) feelCounts[e.feeling] = (feelCounts[e.feeling] || 0) + 1;
+        });
+        const getTop = (obj) => Object.entries(obj).sort((a, b) => b[1] - a[1])[0]?.[0];
+        return { topCat: getTop(catCounts), topFeel: getTop(feelCounts) };
     }, [entries]);
 
-    const topFeeling = useMemo(() => {
-        if (!entries.length) return null;
-        const counts = {};
-        entries.forEach(e => { if (e.feeling) counts[e.feeling] = (counts[e.feeling] || 0) + 1; });
-        return Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0];
-    }, [entries]);
-
+    // 2. Updated heroImages logic with proxy
     const heroImages = useMemo(() =>
-        entries.filter(e => e.imageUrl).slice(0, 8).map(e => e.imageUrl),
+        entries
+            .filter(e => e.imageUrl)
+            .slice(0, 8)
+            .map(e => getProxiedImageUrl(e.imageUrl)), 
         [entries]);
 
     const activeCatColor = activeCategory !== 'ALL'
@@ -125,6 +148,7 @@ const UserProfile = () => {
         <div className="up-page">
             <div className="up-hero">
                 <div className="up-mosaic">
+                    {/* 3. Updated Mosaic rendering */}
                     {heroImages.map((img, i) => (
                         <div
                             key={i}
@@ -138,21 +162,17 @@ const UserProfile = () => {
 
                 <div className={`up-hero__content ${heroLoaded ? 'up-hero__content--in' : ''}`}>
                     <Link to="/community" className="up-back">← All Curators</Link>
-
                     <div className="up-hero__identity">
                         <p className="up-hero__eyebrow">The taste of</p>
                         <h1 className="up-hero__name">{username}</h1>
-                        {/* Displaying the bio fetched from the NEW public API */}
                         {bio && <p className="up-hero__bio">{bio}</p>}
                     </div>
-
                     <p className="up-hero__prose">
                         <span className="up-hero__num">{totalEntries}</span> picks across&nbsp;
                         <span className="up-hero__num">{categories.length}</span> worlds
-                        {topCategory && <> · mostly <em>{formatLabel(topCategory)}</em></>}
-                        {topFeeling && <> · always <em>{formatLabel(topFeeling)}</em></>}
+                        {stats.topCat && <> · mostly <em>{formatLabel(stats.topCat)}</em></>}
+                        {stats.topFeel && <> · always <em>{formatLabel(stats.topFeel)}</em></>}
                     </p>
-
                     <div className="up-cats">
                         <button
                             className={`up-cat ${activeCategory === 'ALL' ? 'up-cat--active-all' : ''}`}
@@ -183,7 +203,6 @@ const UserProfile = () => {
                 </div>
             </div>
 
-            {/* (Grid rendering remains the same as before) */}
             {filtered.length > 0 ? (
                 <div className="up-collection">
                     {activeCatColor && (
@@ -194,7 +213,6 @@ const UserProfile = () => {
                             <span className="up-stripe__count">{filtered.length} picks</span>
                         </div>
                     )}
-
                     <div className="up-grid">
                         {filtered.map((entry, i) => {
                             const col = CATEGORY_COLORS[entry.category?.toUpperCase()] || DEFAULT_COLOR;
@@ -210,8 +228,14 @@ const UserProfile = () => {
                                         animationDelay: `${(i % 12) * 0.035}s`
                                     }}
                                 >
+                                    {/* 4. Updated Grid Card Image src with proxy */}
                                     {entry.imageUrl ? (
-                                        <img src={entry.imageUrl} alt={entry.title} className="up-card__img" />
+                                        <img 
+                                            src={getProxiedImageUrl(entry.imageUrl)} 
+                                            alt={entry.title} 
+                                            className="up-card__img" 
+                                            loading="lazy" 
+                                        />
                                     ) : (
                                         <div className="up-card__placeholder">
                                             <span className="up-card__initial" style={{ color: col.from }}>
@@ -224,16 +248,13 @@ const UserProfile = () => {
                                     <div className="up-card__strip">
                                         <p className="up-card__strip-title">{entry.title}</p>
                                     </div>
-
                                     <div className="up-card__over">
                                         <span className="up-card__over-cat" style={{ color: col.from }}>
                                             {entry.category}
                                         </span>
                                         <h3 className="up-card__over-title">{entry.title}</h3>
                                         <p className="up-card__over-creator">{entry.creator}</p>
-                                        {entry.notes && (
-                                            <p className="up-card__over-notes">"{entry.notes}"</p>
-                                        )}
+                                        {entry.notes && <p className="up-card__over-notes">"{entry.notes}"</p>}
                                         {entry.feeling && (
                                             <span className="up-card__over-feeling">{formatLabel(entry.feeling)}</span>
                                         )}
