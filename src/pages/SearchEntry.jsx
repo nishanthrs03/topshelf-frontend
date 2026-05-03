@@ -21,11 +21,14 @@ const FEELING_OPTIONS = [
   "TRANSPORTED","UNSETTLING","AWE_INSPIRING"
 ];
 
-// ✅ Image Proxy Helper
+// ✅ Updated Helper: Catches archive.org, coverartarchive.org, and iaXXXX.archive.org
 const getProxiedImageUrl = (url) => {
     if (!url) return null;
 
-    if (url.includes('archive.org')) {
+    const isArchiveUrl = url.includes('archive.org') || url.includes('coverartarchive.org');
+
+    if (isArchiveUrl) {
+        // Since you have vercel.json rewrites, /imageproxy works on the live site
         return `/imageproxy?url=${encodeURIComponent(url)}`;
     }
 
@@ -43,7 +46,6 @@ const SearchEntry = () => {
     const [totalResults, setTotalResults] = useState(0);
     const [loadingMore, setLoadingMore] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(false);
-    const [feelingSearch, setFeelingSearch] = useState('');
 
     const [filters, setFilters] = useState({
         title: '', creator: '', username: '',
@@ -86,13 +88,19 @@ const SearchEntry = () => {
 
             const data = res.data;
 
-            setResults(prev => append ? [...prev, ...data.content] : data.content);
-            setHasMore(!data.last);
-            setTotalResults(data.totalElements);
+            // ✅ Robust Data Handling: 
+            // Handles both paginated objects (data.content) and flat arrays (data)
+            const items = data.content || (Array.isArray(data) ? data : []);
+
+            setResults(prev => append ? [...prev, ...items] : items);
+            
+            // Set pagination flags safely
+            setHasMore(data.last === false);
+            setTotalResults(data.totalElements || items.length);
             setPage(pageNum);
 
         } catch (err) {
-            console.error(err);
+            console.error("Search fetch error:", err);
         } finally {
             setLoading(false);
             setLoadingMore(false);
@@ -101,11 +109,9 @@ const SearchEntry = () => {
 
     useEffect(() => {
         clearTimeout(debounceRef.current);
-
         debounceRef.current = setTimeout(() => {
             fetchResults(filters, 0, false);
         }, 400);
-
         return () => clearTimeout(debounceRef.current);
     }, [filters]);
 
@@ -114,16 +120,12 @@ const SearchEntry = () => {
             title: '', creator: '', username: '',
             category: '', genre: '', feeling: '', sort: 'newest'
         });
-
         setResults([]);
         setSearched(false);
         setHasMore(false);
         setTotalResults(0);
         setPage(0);
     };
-
-    const formatLabel = (str) =>
-        str.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
 
     const activeFilterCount = [
         filters.title, filters.creator, filters.username,
@@ -132,7 +134,6 @@ const SearchEntry = () => {
 
     return (
         <div className="find-wrapper">
-
             <div className="find-header">
                 <div className="find-header-inner">
                     <div>
@@ -153,13 +154,35 @@ const SearchEntry = () => {
             </div>
 
             <div className="find-layout">
-
                 <aside className={`find-sidebar ${sidebarOpen ? 'find-sidebar--open' : ''}`}>
-                    {/* (sidebar unchanged) */}
+                    <div className="sidebar-group">
+                        <label>Category</label>
+                        <select name="category" value={filters.category} onChange={handleChange}>
+                            {CATEGORIES.map(c => <option key={c} value={c}>{c || 'All'}</option>)}
+                        </select>
+                    </div>
+
+                    {filters.category && GENRE_MAP[filters.category] && (
+                        <div className="sidebar-group">
+                            <label>Genre</label>
+                            <select name="genre" value={filters.genre} onChange={handleChange}>
+                                <option value="">All Genres</option>
+                                {GENRE_MAP[filters.category].map(g => (
+                                    <option key={g} value={g}>{g.replace(/_/g, ' ')}</option>
+                                ))}
+                            </select>
+                        </div>
+                    )}
+
+                    <div className="sidebar-group">
+                        <label>Title</label>
+                        <input name="title" value={filters.title} onChange={handleChange} placeholder="Search title..." />
+                    </div>
+
+                    <button className="reset-btn" onClick={handleReset}>Reset Filters</button>
                 </aside>
 
                 <main className="find-results">
-
                     {loading && (
                         <div className="results-state">
                             <span className="find-spinner" />
@@ -183,16 +206,17 @@ const SearchEntry = () => {
                             <div className="results-grid">
                                 {results.map(entry => (
                                     <div
-                                        key={entry.id}
+                                        key={entry.id || entry.externalId}
                                         className="result-card"
-                                        onClick={() => navigate(`/entry/${entry.id}`)}
+                                        onClick={() => navigate(`/entry/${entry.id || entry.externalId}`)}
                                     >
                                         <div className="result-card__poster">
                                             {entry.imageUrl ? (
                                                 <img
-                                                    src={getProxiedImageUrl(entry.imageUrl)} // ✅ HERE
+                                                    src={getProxiedImageUrl(entry.imageUrl)} 
                                                     alt={entry.title}
                                                     className="result-card__img"
+                                                    onError={(e) => { e.target.style.display = 'none'; }}
                                                 />
                                             ) : (
                                                 <div className="result-card__placeholder">
