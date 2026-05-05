@@ -123,9 +123,7 @@ const Feed = () => {
             <div className="feed-masthead-wrapper">
     <div className="feed-masthead">
         <div>
-            <p className="feed-masthead__eyebrow">The</p>
-            <h2 className="feed-masthead__title"><em>Collection</em></h2>
-        </div>
+<h2 className="feed-masthead__title">The <em>Collection</em></h2>        </div>
         <div className="sort-bar">
             {[
                 { label: 'LATEST',       value: 'newest' },
