@@ -120,29 +120,29 @@ const Feed = () => {
                 </div>
             </section>
 
-            {/* ── COLLECTION HEADER ── */}
-<div className="collection-header">
-    <div className="collection-header__title">
-        <h1>
-            The <em>Collection</em>
-        </h1>
-        <span className="collection-header__underline" />
+            <div className="feed-masthead-wrapper">
+    <div className="feed-masthead">
+        <div>
+            <p className="feed-masthead__eyebrow">The</p>
+            <h2 className="feed-masthead__title"><em>Collection</em></h2>
+        </div>
+        <div className="sort-bar">
+            {[
+                { label: 'LATEST',       value: 'newest' },
+                { label: 'TRENDING',     value: 'trending' },
+                { label: 'MOST PRAISED', value: 'top' },
+            ].map(tab => (
+                <button
+                    key={tab.value}
+                    className={sortBy === tab.value ? 'active' : ''}
+                    onClick={() => setSortBy(tab.value)}
+                >
+                    {tab.label}
+                </button>
+            ))}
+        </div>
     </div>
-    <div className="collection-header__tabs">
-        {[
-            { label: 'LATEST',      value: 'newest' },
-            { label: 'TRENDING',    value: 'trending' },
-            { label: 'MOST PRAISED',value: 'top' },
-        ].map(tab => (
-            <button
-                key={tab.value}
-                className={`collection-tab ${sortBy === tab.value ? 'collection-tab--active' : ''}`}
-                onClick={() => setSortBy(tab.value)}
-            >
-                {tab.label}
-            </button>
-        ))}
-    </div>
+    <div className="feed-rule" />
 </div>
 
             {/* ── GRID ── */}
