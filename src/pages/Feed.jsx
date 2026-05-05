@@ -120,6 +120,31 @@ const Feed = () => {
                 </div>
             </section>
 
+            {/* ── COLLECTION HEADER ── */}
+<div className="collection-header">
+    <div className="collection-header__title">
+        <h1>
+            The <em>Collection</em>
+        </h1>
+        <span className="collection-header__underline" />
+    </div>
+    <div className="collection-header__tabs">
+        {[
+            { label: 'LATEST',      value: 'newest' },
+            { label: 'TRENDING',    value: 'trending' },
+            { label: 'MOST PRAISED',value: 'top' },
+        ].map(tab => (
+            <button
+                key={tab.value}
+                className={`collection-tab ${sortBy === tab.value ? 'collection-tab--active' : ''}`}
+                onClick={() => setSortBy(tab.value)}
+            >
+                {tab.label}
+            </button>
+        ))}
+    </div>
+</div>
+
             {/* ── GRID ── */}
             {loading && entries.length === 0 ? (
                 <div className="feed-loading"><span /></div>
